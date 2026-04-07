@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Market Time Order</title>
+
+  <!-- Bootstrap Local CSS -->
+  <link href="./bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-black text-light">
+
+<div class="container py-5 ">
+  <h2 class="mb-4">🌍 Market Time</h2>
+
+  <!-- JAM UTAMA (Jakarta full detik) -->
+  <h1 class="mb-2 fs-1 fw-bold"><span id="jakarta-time"></span></h1>
+  <h5 class="mb-4" id="jakarta-date"></h5>
+
+  <div class="row">
+
+    <!-- Tokyo -->
+    <div class="col-md-6 col-lg-3 col-12 mb-3">
+      <div class="card bg-dark text-white shadow">
+        <div class="card-body">
+          <div><span class="fs-4 fw-bold">Tokyo</span> <small>(UTC+9)</small></div>
+          <small id="tokyo-date"></small>
+          <div class="fs-1 fw-bold" id="tokyo-time"></div>
+		  <small>09:00 - 18:00</small>
+        </div>
+      </div>
+    </div>
+
+<!-- UTC Reset -->
+    <div class="col-md-6 col-lg-3 col-12 mb-3">
+      <div class="card bg-dark text-white shadow">
+        <div class="card-body">
+          <div><span class="fs-4 fw-bold">UTC+0</span></div>
+          <small id="utc-date"></small>
+          <div class="fs-1 fw-bold" id="utc-time"></div>
+		  <small>00:00 - 24:00</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- London -->
+    <div class="col-md-6 col-lg-3 col-12 mb-3">
+      <div class="card bg-dark text-white shadow">
+        <div class="card-body">
+          <div><span class="fs-4 fw-bold">London</span> <small>(UTC+1)</small></div>
+          <small id="london-date"></small>
+         <div class="fs-1 fw-bold" id="london-time"></div>
+		  <small>08:00 - 17:00</small>
+        </div>
+      </div>
+    </div>
+
+    
+
+    <!-- New York -->
+    <div class="col-md-6 col-lg-3 col-12 mb-3">
+      <div class="card bg-dark text-white shadow">
+        <div class="card-body">
+			<div><span class="fs-4 fw-bold">New York</span> <small>(UTC-4)</small></div>
+          <small id="newyork-date"></small>
+          <div class="fs-1 fw-bold" id="newyork-time"></div>
+		  <small>08:00 - 17:00</small>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="./bootstrap.bundle.min.js"></script>
+
+<script>
+function updateTime() {
+  const now = new Date();
+  const utc = new Date(now.toUTCString());
+
+  const hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+  const bulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+
+  function formatDate(date) {
+    return `${hari[date.getUTCDay()]}, ${date.getUTCDate()} ${bulan[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+  }
+
+  // FULL (dengan detik)
+  function formatTimeFull(date) {
+    return date.toISOString().slice(11,19);
+  }
+
+  // TANPA DETIK
+  function formatTimeNoSeconds(date) {
+    return date.toISOString().slice(11,16);
+  }
+
+  function getTime(offset, noSeconds = false) {
+    let d = new Date(utc);
+    d.setHours(utc.getHours() + offset);
+
+    return {
+      date: formatDate(d),
+      time: noSeconds ? formatTimeNoSeconds(d) : formatTimeFull(d)
+    };
+  }
+
+  // Jakarta (pakai detik)
+  const jakarta = getTime(7, false);
+
+  // lainnya tanpa detik
+  const tokyo = getTime(9, true);
+  const london = getTime(1, true);
+  const newyork = getTime(-4, true);
+  const utcNow = {
+    date: formatDate(utc),
+    time: formatTimeNoSeconds(utc)
+  };
+
+  document.getElementById("jakarta-date").innerText = jakarta.date;
+  document.getElementById("jakarta-time").innerText = jakarta.time;
+
+  document.getElementById("tokyo-date").innerText = tokyo.date;
+  document.getElementById("tokyo-time").innerText = tokyo.time;
+
+  document.getElementById("london-date").innerText = london.date;
+  document.getElementById("london-time").innerText = london.time;
+
+  document.getElementById("newyork-date").innerText = newyork.date;
+  document.getElementById("newyork-time").innerText = newyork.time;
+
+  document.getElementById("utc-date").innerText = utcNow.date;
+  document.getElementById("utc-time").innerText = utcNow.time;
+}
+
+setInterval(updateTime, 1000);
+updateTime();
+</script>
+
+</body>
+</html>
